@@ -91,7 +91,6 @@
 |----------|----------------------|--------------------|---------|
 | [Feature-specific, e.g. **AI**] | e.g. @google/generative-ai | — | Summarization for this feature only |
 | [e.g. **Crawler**] | e.g. cheerio, Puppeteer | — | … |
-| [e.g. **PDF**] | e.g. lib for document export | — | … |
 | **Other** | … | … | … |
 
 ### 4.3 Data Model & APIs
@@ -154,14 +153,46 @@ sequenceDiagram
 
 ---
 
-## 6. Open Questions / Decisions
+## 6. Edge Cases & UI States
+
+> Document every state where the happy path is NOT followed. Each row maps a scenario to its required UI response.
+
+### 6.1 Empty States
+
+| Scenario | UI Response |
+|---|---|
+| [e.g. Feed has no items] | [e.g. Illustration + "Nothing here yet." + CTA] |
+
+### 6.2 Loading States
+
+| Scenario | UI Response |
+|---|---|
+| [e.g. Initial feed load] | [e.g. 3 skeleton card placeholders] |
+
+### 6.3 Error States
+
+| Scenario | UI Response |
+|---|---|
+| [e.g. API timeout] | [e.g. Inline error + [Retry] button] |
+| [e.g. Network offline] | [e.g. Banner: "You're offline. Changes saved locally."] |
+
+### 6.4 Permission & Auth States
+
+| Scenario | UI Response |
+|---|---|
+| [e.g. Guest attempts protected action] | [e.g. Auth bottom-sheet modal with Sign Up CTA] |
+| [e.g. Location permission denied] | [e.g. Banner with deep-link to device settings] |
+
+---
+
+## 7. Open Questions / Decisions
 
 - [ ] **Q1:** [Question or ADR to be decided]
 - [ ] **Q2:** …
 
 ---
 
-## 7. Changelog
+## 8. Changelog
 
 | Date | Author | Change |
 |------|--------|--------|
