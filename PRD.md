@@ -161,3 +161,10 @@ Implemented via a `regions` table with a `parent_id` for infinite drill-down. Sc
 | **Security** | All uploads scanned for malware. Location data never exposed beyond city-level for public views. |
 | **Moderation** | All UGC (comments, reports, promise submissions) subject to thresholds defined in feature docs. |
 | **Localization** | Indonesian (ID) primary. English (EN) secondary, future phase. |
+
+---
+
+## 7. Visual Design Reference
+
+### "The Walk" Banner (Hero Section)
+![Hero Reference](https://files.catbox.moe/s4rt5o.png)
