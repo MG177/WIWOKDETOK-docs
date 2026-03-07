@@ -129,7 +129,7 @@ Implemented via a `regions` table with a `parent_id` for infinite drill-down. Sc
 
 | | |
 |---|---|
-| **XP / Watchdog Level** | Users earn XP for civic actions (reports, votes, comments). 7 levels from "Warga Baru" to "Environmental Guardian." |
+| **XP / Watchdog Level** | Users earn XP for civic actions (reports, votes, comments). 7 levels from "Warga Baru" to "Penjaga Lingkungan" (Environmental Guardian). See `docs/feature-profile.md` and `src/lib/gamification.ts` for full list and E2E coverage. |
 | **Verified Citizen Badge** | Granted after phone verification + 30-day account age + ≥3 accepted reports. Increases vote weight (1.2×). |
 | **Notification Triggers** | Per-promise follows; Critical Action Gaps; New Policy Announcements; Weekly Digest. |
 | **Preference Center** | Regions of Interest, notification toggles, account controls (email, password, linked accounts). |
