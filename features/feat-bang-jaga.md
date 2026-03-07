@@ -42,9 +42,9 @@
 - [ ] **AC-02:** User can send text messages and receive replies citing Perda/UU via RAG.
 - [ ] **AC-03:** "Search Laws (RAG)" chip returns a structured list of regulation citations, not a paragraph.
 - [ ] **AC-04:** User can upload up to 5 images (JPG/PNG/WEBP, max 5MB each, 20MB total); images are used as multimodal context.
-- [ ] **AC-05:** Document Preview panel activates when enough data exists; preview streams via SSE with a "LIVE UPDATE" badge.
-- [ ] **AC-06:** "Download PDF" triggers server-side render; on failure shows error toast with [Retry] and [Copy as Text].
-- [ ] **AC-07:** "Quick-Copy WA" copies a plain-text WhatsApp-formatted version; toast confirms: "Copied for WhatsApp!"
+- [ ] **AC-05:** Document Preview panel activates only when the AI detects the user has both expressed intention and agreement to create a Surat Pengaduan. Preview content is driven by structured complaint data (subject, recipient, location, violation, legal basis) extracted from the AI response — not hardcoded. A "LIVE UPDATE" badge appears when a draft is active.
+- [ ] **AC-06:** "Download PDF" sends the same structured complaint data to `POST /api/export-pdf`, ensuring preview and PDF always match. On failure shows error toast.
+- [ ] **AC-07:** "Quick-Copy WA" generates a WhatsApp-formatted version from the same complaint data; toast confirms: "Copied for WhatsApp!"
 - [ ] **AC-08:** "Share to Map" launches a 7-step flow: GPS request → location preview → summary edit → privacy consent → confirmation.
 - [ ] **AC-09:** RAG Legal Context edit (✏️) opens a law-search modal; user-correction is logged as feedback for RAG improvement.
 - [ ] **AC-10:** Sessions are persisted per user; sidebar lists sessions grouped by TODAY / PREVIOUS 7 DAYS / older months.
@@ -315,3 +315,4 @@ sequenceDiagram
 | 2025-03-04 | — | Initial draft from PRD §4.2 |
 | 2025-03-04 | — | Added Share to Walk-o-Meter (US-08, AC-08) |
 | 2026-03-05 | — | Gap analysis applied: session management, streaming spec, RAG edit flow, Search Laws chip, Bang Jaga persona distinction, image error states, Share-to-Map 7-step flow, all edge cases |
+| 2026-03-07 | — | Document Preview made conditional (intention + agreement detection via AI) and data-driven (structured ComplaintDraft from model response). PDF export and WhatsApp share now use the same complaint data object. Added `complaint-utils.ts` for marker parsing/stripping. |
