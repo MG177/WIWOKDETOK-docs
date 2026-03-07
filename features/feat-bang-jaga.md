@@ -110,7 +110,7 @@
 ### 4.1 Architecture Context
 
 - **Layer:** Frontend (Next.js App Router — chat UI, live document preview), Server Actions (chat, RAG, PDF), AI (Gemini Flash streaming), Storage.
-- **Entry points:** `/chat` (new session); `/chat/:sessionId` (resume session); Server Actions: `sendMessage`, `generateSuratPengaduan`, `exportPdf`, `getQuickCopy`, `shareComplaintToMap`.
+- **Entry points:** `/chat` (new session); `/chat/[sessionId]` (resume session); dynamic route uses `useParams()` in client page to avoid Promise-based `params/searchParams` access errors on Next.js 16; Server Actions: `sendMessage`, `generateSuratPengaduan`, `exportPdf`, `getQuickCopy`, `shareComplaintToMap`.
 
 ### 4.2 Feature-Specific Packages & Libraries
 
@@ -316,3 +316,4 @@ sequenceDiagram
 | 2025-03-04 | — | Added Share to Walk-o-Meter (US-08, AC-08) |
 | 2026-03-05 | — | Gap analysis applied: session management, streaming spec, RAG edit flow, Search Laws chip, Bang Jaga persona distinction, image error states, Share-to-Map 7-step flow, all edge cases |
 | 2026-03-07 | — | Document Preview made conditional (intention + agreement detection via AI) and data-driven (structured ComplaintDraft from model response). PDF export and WhatsApp share now use the same complaint data object. Added `complaint-utils.ts` for marker parsing/stripping. |
+| 2026-03-07 | — | Fixed Next.js 16 dynamic route handling for `/chat/[sessionId]` by using `useParams()` in the client page instead of Promise page props; prevents `params/searchParams` sync dynamic API runtime errors. |
