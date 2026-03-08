@@ -3,7 +3,7 @@
 **Codename:** *"No Omon-Omon"*
 **Vision:** Turning political rhetoric into environmental accountability through AI and community action.
 
-> **Changelog v1.1:** Gap analysis applied. Detailed specs moved to `docs/feature-*.md`. PRD now covers overview, architecture, and high-level requirements only.
+> **Changelog v1.1:** Gap analysis applied. Detailed specs moved to `docs/features/feat-*.md`. PRD now covers overview, architecture, and high-level requirements only.
 
 ---
 
@@ -42,21 +42,21 @@ To provide a "Single Source of Truth" where the *rakyat kecil* can compare what 
 
 ### 3.1 Navigation Architecture
 
-**Guest navigation:** `Home` · `Legal Docs` · `Chat` · `Promises Tracker` · `Log In`
+**Guest navigation:** `Logo → Command Center` · `The Talk Ledger` · `Bang Jaga AI` · `Walk-o-Meter Map` · `Walk-o-Meter Feed` · `Log In`
 
-**Authenticated navigation:** `Command Center` · `The Talk Ledger` · `Bang Jaga AI` · `Profile & Settings` · `[Data-Saver Toggle]` · `[User Avatar]`
+**Authenticated navigation:** `Logo → Command Center` · `The Talk Ledger` · `Bang Jaga AI` · `Walk-o-Meter Map` · `Walk-o-Meter Feed` · `Profile & Settings` · `[Data-Saver Toggle]` · `[User Avatar]`
 
 **Route map:**
 
 | Route | Screen |
 |---|---|
-| `/` | The Talk Ledger (public home) |
+| `/` | Command Center |
+| `/promise-tracker` | The Talk Ledger |
 | `/map` | Walk-o-Meter — Map view |
 | `/feed` | Walk-o-Meter — Evidence Feed (List) view |
 | `/chat` | Bang Jaga AI — new session `[AUTH]` |
 | `/chat/:sessionId` | Bang Jaga AI — named session `[AUTH]` |
 | `/profile` | Profile & Settings `[AUTH]` |
-| `/command-center` | Command Center `[AUTH]` |
 
 ### 3.2 Authentication & Access Model
 
@@ -92,7 +92,7 @@ Implemented via a `regions` table with a `parent_id` for infinite drill-down. Sc
 
 ### 4.1 Feature 1: The Talk Ledger — Promise Tracker & Daily Webcrawl
 
-📄 **Full spec:** [`docs/feature-promise-tracker.md`](docs/feature-promise-tracker.md)
+📄 **Full spec:** [`docs/features/feat-promise-tracker.md`](docs/features/feat-promise-tracker.md)
 
 | | |
 |---|---|
@@ -103,7 +103,7 @@ Implemented via a `regions` table with a `parent_id` for infinite drill-down. Sc
 
 ### 4.2 Feature 2: Bang Jaga AI — Legal & Policy Assistant
 
-📄 **Full spec:** [`docs/feature-bang-jaga.md`](docs/feature-bang-jaga.md)
+📄 **Full spec:** [`docs/features/feat-bang-jaga.md`](docs/features/feat-bang-jaga.md)
 
 | | |
 |---|---|
@@ -114,7 +114,7 @@ Implemented via a `regions` table with a `parent_id` for infinite drill-down. Sc
 
 ### 4.3 Feature 3: Walk-o-Meter — Map & Evidence Feed
 
-📄 **Full spec:** [`docs/feature-walk-o-meter.md`](docs/feature-walk-o-meter.md)
+📄 **Full spec:** [`docs/features/feat-walk-o-meter.md`](docs/features/feat-walk-o-meter.md)
 
 | | |
 |---|---|
@@ -131,7 +131,7 @@ Implemented via a `regions` table with a `parent_id` for infinite drill-down. Sc
 |---|---|
 | **XP / Watchdog Level** | Users earn XP for civic actions (reports, votes, comments). 7 levels from "Warga Baru" to "Penjaga Lingkungan" (Environmental Guardian). See `docs/feature-profile.md` and `src/lib/gamification.ts` for full list and E2E coverage. |
 | **Verified Citizen Badge** | Granted after phone verification + 30-day account age + ≥3 accepted reports. Increases vote weight (1.2×). |
-| **Notification Triggers** | Per-promise follows; Critical Action Gaps; New Policy Announcements; Weekly Digest. |
+| **Notification Triggers** | Critical Action Gaps; New Policy Announcements; Weekly Digest. Per-promise follow notifications are deferred to the backlog. |
 | **Preference Center** | Regions of Interest, notification toggles, account controls (email, password, linked accounts). |
 
 ---

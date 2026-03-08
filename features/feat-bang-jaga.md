@@ -1,6 +1,6 @@
 # Feature: Bang Jaga AI — Legal & Policy Assistant
 
-> **File naming:** `feature-bang-jaga.md`
+> **File naming:** `feat-bang-jaga.md`
 
 ---
 
@@ -67,8 +67,8 @@
 | Feature | Reference | Dependency type |
 |---------|-----------|-----------------|
 | Region hierarchy | PRD §3.3 | Required — scope RAG searches by region |
-| Walk-o-Meter | `feature-walk-o-meter.md` | Required — "Share to Map" sends complaint to map |
-| Promise Tracker | `feature-promise-tracker.md` | Optional — link complaint to a promise (P2) |
+| Walk-o-Meter | `docs/features/feat-walk-o-meter.md` | Required — "Share to Map" sends complaint to map |
+| Promise Tracker | `docs/features/feat-promise-tracker.md` | Optional — link complaint to a promise (P2) |
 | Auth | Supabase Auth | Required — sessions require authentication |
 
 ---

@@ -8,7 +8,7 @@ This document defines the **directory structure and organization** for all docum
 
 ## Project Scope
 
-**aksara-karir-lms** is an LMS prototype. Documentation should be simple and practical.
+**WIWOKDETOK** is a civic accountability prototype built around Promise Tracker, Bang Jaga AI, and Walk-o-Meter. Documentation should stay simple and practical.
 
 - **Keep it simple** — Focus on how things work and implementation details.
 - **Document what exists** — Not enterprise patterns or abstract designs.
@@ -53,6 +53,16 @@ docs/
 └── temp/                           # Optional — temporary analysis/planning (not permanent docs)
     └── (analysis-*, planning-*, notes-*, research-*)
 ```
+
+## Canonical Feature Specs
+
+Feature specifications live in `docs/features/` and use the `feat-*.md` naming convention.
+
+- `docs/features/feat-promise-tracker.md`
+- `docs/features/feat-bang-jaga.md`
+- `docs/features/feat-walk-o-meter.md`
+
+Legacy top-level files such as `docs/feature-promise-tracker.md` are compatibility stubs only. Update the canonical files in `docs/features/`.
 
 ## Directory Purposes and Naming
 

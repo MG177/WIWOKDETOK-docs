@@ -1,6 +1,6 @@
 # Feature: [Feature Name]
 
-> **File naming:** `feature-[featureName].md` (e.g. `feature-promise-tracker.md`, `feature-bang-jaga.md`)
+> **File naming:** `feat-[feature-name].md` (e.g. `feat-promise-tracker.md`, `feat-bang-jaga.md`)
 
 ---
 

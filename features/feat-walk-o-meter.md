@@ -1,6 +1,6 @@
 # Feature: Walk-o-Meter — Map & Evidence Feed
 
-> **File naming:** `feature-walk-o-meter.md`
+> **File naming:** `feat-walk-o-meter.md`
 
 ---
 
@@ -67,8 +67,8 @@
 
 | Feature | Reference | Dependency type |
 |---------|-----------|-----------------|
-| Promise Tracker | `feature-promise-tracker.md` | Required — provides promises; consumes Walk-o-Meter score |
-| Bang Jaga | `feature-bang-jaga.md` | Required — complaint reports originate from Surat Pengaduan |
+| Promise Tracker | `docs/features/feat-promise-tracker.md` | Required — provides promises; consumes Walk-o-Meter score |
+| Bang Jaga | `docs/features/feat-bang-jaga.md` | Required — complaint reports originate from Surat Pengaduan |
 | Region hierarchy | PRD §3.3 | Required — location validation and region scoping |
 | Auth | Supabase Auth | Required for submitting reports and votes |
 

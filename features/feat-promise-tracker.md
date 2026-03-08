@@ -1,6 +1,6 @@
 # Feature: Promise Tracker & Daily Webcrawl (The Talk Ledger)
 
-> **File naming:** `feature-promise-tracker.md`
+> **File naming:** `feat-promise-tracker.md`
 
 ---
 
@@ -10,7 +10,7 @@
 |-------|-------------|
 | **Feature ID** | `F-001` |
 | **Objective** | To create a continuously updated, publicly verifiable database of environmental promises, tracking their progress and fulfillment to hold officials accountable. |
-| **Summary** | The Talk Ledger is the app's public home page — a searchable feed of environmental promises. Each card shows the quote, source, Walk-o-Meter score, AI summary, and Bang Jaga Watchdog commentary. A daily webcrawl ingests news and social media into three categories (New Promises, Progress Updates, Fulfillment Tracking). Gemini Flash summarizes long docs into "What was promised," "When," and "The Budget." Users can Like, Comment, Share, Follow, Flag as BS, and Submit new promises. |
+| **Summary** | The Talk Ledger lives at `/promise-tracker` and is linked from the Command Center at `/`. It is a searchable, filterable feed of environmental promises. Each card shows the quote, source, Walk-o-Meter score, AI summary, and Bang Jaga Watchdog commentary. A daily webcrawl ingests news and social media into three categories (New Promises, Progress Updates, Fulfillment Tracking). Gemini Flash summarizes long docs into "What was promised," "When," and "The Budget." Users can Like, Comment, Share, Follow, Flag as BS, and Submit new promises. |
 | **Related PRD** | PRD §4.1 |
 
 ---
@@ -26,7 +26,7 @@
 | US-03 | Citizen | Read an AI summary (what, when, budget) | I understand the promise without reading 50-page PDFs | P0 |
 | US-04 | System | Run a daily crawl of news and social media | The database stays up to date automatically | P0 |
 | US-05 | System | Classify crawled items as New Promise / Progress / Fulfillment | Data is structured for tracking and analytics | P0 |
-| US-06 | Citizen | Follow a promise to get notified when it changes | I don't have to keep checking manually | P1 |
+| US-06 | Citizen | Follow a promise and manage that follow state from the card | I can keep track of promises I care about | P1 |
 | US-07 | Citizen | Flag a promise card as misleading or wrong | Community can signal low-quality data to admins | P1 |
 | US-08 | Citizen | Comment on a promise card | I can add context or discuss with others | P1 |
 | US-09 | Citizen | Submit a new promise not in the system | I can add promises the crawler missed | P2 |
@@ -34,12 +34,12 @@
 
 ### 2.2 Acceptance Criteria
 
-- [ ] **AC-01:** Home feed loads showing quote/summary, source, date, and Walk-o-Meter score per card.
+- [ ] **AC-01:** The Talk Ledger feed loads showing quote/summary, source, date, and Walk-o-Meter score per card.
 - [ ] **AC-02:** Search and filter (region, politician, year, status) return the correct subset of promises.
 - [ ] **AC-03:** For long sources (PDFs, long articles), a 3-bullet AI summary is shown: What, When, Budget.
 - [ ] **AC-04:** Daily cron runs successfully; new/updated items appear in the feed after processing.
 - [ ] **AC-05:** Crawled items are tagged: New Promise, Progress Update, or Fulfillment.
-- [ ] **AC-06:** Authenticated users can follow a promise; notification is triggered on score change >5% or new progress update.
+- [ ] **AC-06:** Authenticated users can follow a promise from the card; the button switches to `Following`, and a second tap confirms unfollow.
 - [ ] **AC-07:** Authenticated users can flag a promise; at ≥10 flags an admin alert is triggered.
 - [ ] **AC-08:** Authenticated users can comment (max 500 chars); comments with ≥5 flags are auto-hidden.
 - [ ] **AC-09:** User-submitted promises enter a pending moderation queue; submitter is notified on approval or rejection.
@@ -62,8 +62,8 @@
 | Feature | Reference | Dependency type |
 |---------|-----------|-----------------|
 | Region hierarchy | PRD §3.3 | Required — filter/drill-down |
-| Walk-o-Meter | `feature-walk-o-meter.md` | Required — supplies Walk-o-Meter score per promise |
-| Bang Jaga | `feature-bang-jaga.md` | Optional — may link complaints to a promise (P1) |
+| Walk-o-Meter | `docs/features/feat-walk-o-meter.md` | Required — supplies Walk-o-Meter score per promise |
+| Bang Jaga | `docs/features/feat-bang-jaga.md` | Optional — may link complaints to a promise (P1) |
 
 ---
 
@@ -71,7 +71,7 @@
 
 ### 3.1 Performance
 
-- **Latency:** Home feed FCP < 2s (p95); search/filter response < 1.5s.
+- **Latency:** The Talk Ledger FCP < 2s (p95); search/filter response < 1.5s.
 - **Throughput:** Feed and search support concurrent reads; crawl runs once per day.
 - **Data volume:** Pagination at 20 items per page; support 10k+ promises without degradation.
 
@@ -104,8 +104,8 @@
 
 ### 4.1 Architecture Context
 
-- **Layer:** Frontend (Next.js App Router), Server Actions/API, Cron (daily crawl), AI (summarization + Watchdog commentary).
-- **Entry points:** `/` (home feed); Server Actions for feed/search; Vercel Cron for daily crawl.
+- **Layer:** Frontend (Next.js App Router), Server Actions, cron routes, AI (summarization + Watchdog commentary).
+- **Entry points:** `/promise-tracker` (Talk Ledger UI), `/` (Command Center linking into the feed), `src/app/actions/promises.ts`, `/api/cron/crawl`, `/api/cron/validate-urls`.
 
 ### 4.2 Feature-Specific Packages & Libraries
 
@@ -127,15 +127,15 @@
 - **`promise_submissions`:** `id`, `promise_id` (nullable, set on approval), `submitted_by`, `quote`, `source_url`, `politician_name`, `date`, `status` (`pending`|`approved`|`rejected`), `admin_reason` (nullable), `created_at`
 - **`crawl_runs`:** `id`, `started_at`, `finished_at`, `status`, `items_processed`, `error_log`
 
-**Key APIs / Server Actions:**
+**Key APIs / Server Actions / Routes:**
 
-- `getPromiseFeed(regionId?, search?, category?, status?, year?, page)` — paginated feed
-- `getPromiseById(id)` — single promise with score and comments
-- `runDailyCrawl()` — cron trigger; fetch, classify, dedupe, summarize, generate Watchdog commentary, write to DB
-- `reactToPromise(promiseId, type, reason?)` — like / follow / flag
+- `getPromiseFeed({ search, category, region, year, status, page })` — paginated feed server action
+- `getPromiseFeedFacets()` — fetch available region/year filter values for the UI
+- `reactToPromise(promiseId, type)` — like / follow / flag
 - `commentOnPromise(promiseId, text)` — insert comment; enforce 500-char limit
 - `submitNewPromise(data)` — enter moderation queue
-- `validateSourceUrls()` — weekly job to update `source_status`
+- `GET /api/cron/crawl` — cron trigger; fetch, classify, summarize, generate Watchdog commentary, write to DB
+- `GET /api/cron/validate-urls` — update `source_status`
 
 **External APIs / services:**
 
@@ -144,14 +144,14 @@
 
 ### 4.4 Configuration & Environment
 
-- **Env vars:** `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `GOOGLE_GEMINI_API_KEY`, `CRAWL_CRON_SECRET`
+- **Env vars:** `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `GOOGLE_GEMINI_API_KEY`, `CRAWL_SOURCES`, `CRAWL_CRON_SECRET`
 - **Feature flags:** `FEATURE_PROMISE_SEARCH` — advanced search; `FEATURE_USER_SUBMIT_PROMISE` — user submissions
 
 ---
 
 ## 5. Sequence Diagram (Feature & Data Flow)
 
-### 5.1 User opens home feed and searches promises
+### 5.1 User opens The Talk Ledger and searches promises
 
 ```mermaid
 sequenceDiagram
@@ -160,8 +160,8 @@ sequenceDiagram
     participant SA as Server Actions
     participant DB as Supabase (DB)
 
-    User->>UI: Open home / Enter search or filter
-    UI->>SA: getPromiseFeed(regionId?, search?, page)
+    User->>UI: Open /promise-tracker / Enter search or filter
+    UI->>SA: getPromiseFeed({ search, category, region, year, status, page })
     SA->>DB: Query promises + walk_o_meter_score
     DB-->>SA: Rows
     SA-->>UI: Serialized feed
@@ -191,7 +191,7 @@ sequenceDiagram
     DB-->>Job: OK
 ```
 
-### 5.3 User follows a promise and receives a notification
+### 5.3 User follows and unfollows a promise
 
 ```mermaid
 sequenceDiagram
@@ -199,17 +199,18 @@ sequenceDiagram
     participant UI as Frontend
     participant SA as Server Actions
     participant DB as Supabase
-    participant Notif as Notification Service
-
     User->>UI: Tap Follow (🔔) on promise card
     UI->>SA: reactToPromise(promiseId, "follow")
     SA->>DB: Insert promise_reactions (type=follow)
     DB-->>SA: OK
     SA-->>UI: Bell icon → filled green
-    Note over DB,Notif: When score changes >5% or new progress crawled:
-    Notif->>DB: Query follow list for promise
-    DB-->>Notif: user_ids
-    Notif->>User: Push / in-app notification
+    User->>UI: Tap Following again
+    UI-->>User: Confirm tooltip: "Tap again to unfollow"
+    User->>UI: Tap Following again within the confirmation window
+    UI->>SA: reactToPromise(promiseId, "follow")
+    SA->>DB: Delete promise_reactions row
+    DB-->>SA: OK
+    SA-->>UI: Button returns to Follow
 ```
 
 ---
