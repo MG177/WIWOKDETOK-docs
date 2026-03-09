@@ -125,11 +125,11 @@ Implemented via a `regions` table with a `parent_id` for infinite drill-down. Sc
 
 ### 4.4 Cross-Feature: User Profile & Gamification
 
-📄 **Full spec:** Embedded in feature docs; Profile screen spec TBD in `docs/feature-profile.md`.
+📄 **Full spec:** Embedded in feature docs; Profile screen spec TBD in `docs/features/feat-profile.md`.
 
 | | |
 |---|---|
-| **XP / Watchdog Level** | Users earn XP for civic actions (reports, votes, comments). 7 levels from "Warga Baru" to "Penjaga Lingkungan" (Environmental Guardian). See `docs/feature-profile.md` and `src/lib/gamification.ts` for full list and E2E coverage. |
+| **XP / Watchdog Level** | Users earn XP for civic actions (reports, votes, comments). 7 levels from "Warga Baru" to "Penjaga Lingkungan" (Environmental Guardian). See `docs/features/feat-profile.md` and `src/lib/gamification.ts` for full list and E2E coverage. |
 | **Verified Citizen Badge** | Granted after phone verification + 30-day account age + ≥3 accepted reports. Increases vote weight (1.2×). |
 | **Notification Triggers** | Critical Action Gaps; New Policy Announcements; Weekly Digest. Per-promise follow notifications are deferred to the backlog. |
 | **Preference Center** | Regions of Interest, notification toggles, account controls (email, password, linked accounts). |

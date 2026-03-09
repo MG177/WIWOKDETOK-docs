@@ -152,8 +152,7 @@
 
 ### 4.4 Configuration & Environment
 
-- **Env vars:** `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `GOOGLE_GEMINI_API_KEY`
-- **Feature flags:** `FEATURE_BANG_JAGA_SAVE_HISTORY` — persist sessions; `FEATURE_PROMISE_LINK` — link to Promise Tracker
+- **Env vars:** `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `GOOGLE_GEMINI_API_KEY`
 
 ---
 
