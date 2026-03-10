@@ -42,7 +42,7 @@
 - [ ] **AC-06:** Authenticated users can follow a promise from the card; the button switches to `Following`, and a second tap confirms unfollow.
 - [ ] **AC-07:** Authenticated users can flag a promise; at ≥10 flags an admin alert is triggered.
 - [ ] **AC-08:** Authenticated users can comment (max 500 chars); comments with ≥5 flags are auto-hidden.
-- [ ] **AC-09:** User-submitted promises enter a pending moderation queue; submitter is notified on approval or rejection.
+- [ ] **AC-09:** User-submitted promises enter a pending moderation queue and are shown with a "Under review" banner. Admin approval/rejection UI and submitter notification are deferred to backlog.
 - [ ] **AC-10:** Watchdog Commentary is generated at crawl time, stored in DB, and displayed on the card.
 - [ ] **AC-11:** Source URLs with 404 status show: "Original source no longer available."
 
@@ -205,7 +205,7 @@ sequenceDiagram
     DB-->>SA: OK
     SA-->>UI: Bell icon → filled green
     User->>UI: Tap Following again
-    UI-->>User: Confirm tooltip: "Tap again to unfollow"
+    UI-->>User: Confirm pill appears below: "Tap again to unfollow" (auto-dismisses after 3s)
     User->>UI: Tap Following again within the confirmation window
     UI->>SA: reactToPromise(promiseId, "follow")
     SA->>DB: Delete promise_reactions row
@@ -237,7 +237,7 @@ sequenceDiagram
 | Scenario | UI Response |
 |---|---|
 | Feed API fails | *"Couldn't load promises. Check your connection."* + [Retry] |
-| Source URL is 404 | Card footnote: *"Original source no longer available."* |
+| Source URL is 404 | `Source Unavailable` badge on card header + footnote: *"Original source no longer available."* |
 | Source is paywalled | Card footnote: *"Source behind paywall — see AI summary below."* |
 | Comment submission fails | Inline error under the input + [Try again] |
 | PDF export fails | Toast: *"PDF generation failed."* + [Retry] + [Copy as Text] |

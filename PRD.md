@@ -125,7 +125,7 @@ Implemented via a `regions` table with a `parent_id` for infinite drill-down. Sc
 
 ### 4.4 Cross-Feature: User Profile & Gamification
 
-📄 **Full spec:** Embedded in feature docs; Profile screen spec TBD in `docs/features/feat-profile.md`.
+📄 **Full spec:** [`docs/features/feat-profile.md`](docs/features/feat-profile.md)
 
 | | |
 |---|---|
@@ -146,7 +146,7 @@ Implemented via a `regions` table with a `parent_id` for infinite drill-down. Sc
 | **AI** | Google Gemini Flash via `@google/generative-ai` (streaming via SSE) |
 | **PDF** | Puppeteer via Vercel serverless function |
 | **Map** | MapLibre GL JS + OpenStreetMap tiles |
-| **Push Notifications** | Web Push API (PWA) + Supabase Realtime |
+| **Notifications** | Client-side polling + Email (via Resend). Web Push API deferred — see `backlog.md` |
 | **Deployment** | Vercel (Edge Functions for regional latency) |
 
 ---

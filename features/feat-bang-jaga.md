@@ -28,7 +28,7 @@
 | US-01 | Citizen (Pak Budi) | Ask questions about environmental rules in my region | I understand what applies to my situation | P0 |
 | US-02 | Citizen | Get answers that cite specific Perda or UU | I can verify the law with confidence | P0 |
 | US-03 | Citizen | Use a predefined chat template | I don't have to know how to phrase my request | P0 |
-| US-04 | Citizen | Explicitly trigger a law-search query ("Search Laws") | I get a structured list of relevant regulations, not a conversational reply | P1 |
+| US-04 | Citizen | Explicitly trigger a law-search query ("Search Laws") | I get a structured list of relevant regulations, not a conversational reply | P2 (deferred) |
 | US-05 | Citizen | Upload up to 5 images as evidence | My complaint is backed by visual proof | P0 |
 | US-06 | Citizen | See a live-streaming Surat Pengaduan preview | I can watch the document build in real time | P0 |
 | US-07 | Citizen | Download the letter as PDF or copy a WhatsApp version | I can submit to authorities or share easily | P0 |
@@ -40,13 +40,13 @@
 
 - [ ] **AC-01:** Chat loads with an empty-state greeting, 3 template chips, and privacy notice.
 - [ ] **AC-02:** User can send text messages and receive replies citing Perda/UU via RAG.
-- [ ] **AC-03:** "Search Laws (RAG)" chip returns a structured list of regulation citations, not a paragraph.
+- [ ] **AC-03:** *(Deferred to backlog)* "Search Laws (RAG)" chip returns a structured list of regulation citations, not a paragraph. MVP: RAG context is embedded in chat responses with inline citations.
 - [ ] **AC-04:** User can upload up to 5 images (JPG/PNG/WEBP, max 5MB each, 20MB total); images are used as multimodal context.
 - [ ] **AC-05:** Document Preview panel activates only when the AI detects the user has both expressed intention and agreement to create a Surat Pengaduan. Preview content is driven by structured complaint data (subject, recipient, location, violation, legal basis) extracted from the AI response — not hardcoded. A "LIVE UPDATE" badge appears when a draft is active.
-- [ ] **AC-06:** "Download PDF" sends the same structured complaint data to `POST /api/export-pdf`, ensuring preview and PDF always match. On failure shows error toast.
-- [ ] **AC-07:** "Quick-Copy WA" generates a WhatsApp-formatted version from the same complaint data; toast confirms: "Copied for WhatsApp!"
+- [ ] **AC-06:** "Download PDF" sends the same structured complaint data to `POST /api/export-pdf`, ensuring preview and PDF use the same complaint data. Minor template/layout differences may exist between preview and PDF render.
+- [ ] **AC-07:** "Quick-Copy WA" copies a WhatsApp-formatted version to clipboard and shows confirmation toast: "Berhasil disalin!" Falls back to `wa.me` link on clipboard failure.
 - [ ] **AC-08:** "Share to Map" launches a 7-step flow: GPS request → location preview → summary edit → privacy consent → confirmation.
-- [ ] **AC-09:** RAG Legal Context edit (✏️) opens a law-search modal; user-correction is logged as feedback for RAG improvement.
+- [ ] **AC-09:** *(Deferred to backlog)* RAG Legal Context edit (✏️) opens a law-search modal; user-correction is logged as feedback. MVP: Users can report inaccurate responses via a per-message free-text correction, logged to `rag_feedback` with `message_id` and `content`.
 - [ ] **AC-10:** Sessions are persisted per user; sidebar lists sessions grouped by TODAY / PREVIOUS 7 DAYS / older months.
 - [ ] **AC-11:** Session title is AI-generated from the first user message (max 40 chars); fallback to "Chat – [date]".
 
@@ -56,8 +56,8 @@
 - **BR-02:** Max 5 images per session. Accepted: JPG, PNG, WEBP. Max 5MB per image, 20MB total per session.
 - **BR-03:** Surat Pengaduan must include: complainant identity, date, subject, factual description, applicable regulation references, and action sought.
 - **BR-04:** RAG must not invent regulation text. If no match found, Bang Jaga states this and suggests general steps.
-- **BR-05:** Document streams via SSE on every assistant turn that adds new factual data. Debounced 2 seconds after the last token.
-- **BR-06:** The "Search Laws (RAG)" chip scopes the query to laws only. Response format is a structured list, not a chat reply.
+- **BR-05:** MVP: Assistant response is fetched as a complete response from Gemini and displayed with a client-side typewriter animation. True SSE streaming and debounced document generation are deferred to backlog.
+- **BR-06:** *(Deferred to backlog)* The "Search Laws (RAG)" chip scopes the query to laws only. MVP: RAG context is included in every chat response inline.
 - **BR-07:** Sessions are retained for 12 months. Users notified 30 days before deletion of inactive sessions.
 - **BR-08:** A disclaimer is shown in every session: *"Bang Jaga is not a lawyer. Always verify legal advice independently."*
 - **BR-09:** Location is required to Share to Map. If location permission is denied, the Share-to-Map flow is cancelled.
@@ -131,19 +131,19 @@
 - **`generated_documents`:** `id`, `session_id`, `type` (`surat_pengaduan`), `content_json`, `created_at`
 - **`regulations`:** `id`, `region_id`, `type` (`perda`|`uu`), `title`, `source_url`, `content_text`, `effective_date`
 - **`regulation_embeddings`:** `id`, `regulation_id`, `chunk_index`, `content_chunk`, `embedding` (vector)
-- **`rag_feedback`:** `id`, `session_id`, `original_law_id`, `user_selected_law_id`, `created_at`
+- **`rag_feedback`:** `id`, `session_id`, `message_id`, `content` (free-text correction from user), `created_at`. *(Note: The documented law-to-law correction model (`originalLawId`, `userSelectedLawId`) is deferred. MVP records free-text corrections per message.)*
 
 **Key APIs / Server Actions:**
 
 - `createSession()` — creates a new chat_session; returns `sessionId`
-- `sendMessage(sessionId, message, imageUrls?)` — append message, call RAG + Gemini (stream), return SSE
-- `searchLaws(query, regionId?)` — explicit RAG-only lookup; returns structured citation list
-- `getRegulationContext(query, regionId?, limit)` — embed query, search pgvector, return top-k chunks
-- `generateSuratPengaduan(sessionId)` — build letter from conversation; return HTML/JSON for preview
-- `exportPdf(sessionId)` — server-side Puppeteer PDF render; return blob
-- `getQuickCopy(sessionId)` — return WhatsApp-optimised plain text
-- `shareComplaintToMap(sessionId, latitude, longitude, summary)` — insert into `walk_o_meter_reports`
-- `submitRagFeedback(sessionId, originalLawId, userSelectedLawId)` — log user correction
+- `sendMessage(sessionId, message, imageUrls?)` — append message, call RAG + Gemini, return complete response (client renders with typewriter animation)
+- `searchLaws(query, regionId?)` — *(deferred to backlog)* explicit RAG-only lookup; returns structured citation list
+- `getRegulationContext(query, regionId?, limit)` — embed query, search pgvector, return top-k chunks. Uses user's profile region when available; falls back to all regulations if no region-specific matches found.
+- `generateSuratPengaduan(sessionId)` — *(deferred to backlog)* build letter from conversation; return HTML/JSON for preview. MVP: complaint data is extracted inline from the AI response via markers.
+- `exportPdf(sessionId)` — *(deferred to backlog)* server-side Puppeteer PDF render. MVP: client-side PDF generation from complaint data.
+- `getQuickCopy(sessionId)` — return WhatsApp-optimised plain text (implemented as client-side clipboard copy)
+- `shareComplaintToMap(sessionId, latitude, longitude, summary)` — insert into `walk_o_meter_reports` with `complaint_id`
+- `submitRagFeedback(sessionId, messageId, content)` — log user correction as free-text feedback
 
 **External APIs / services:**
 

@@ -54,7 +54,7 @@
   community_score        = (valid "Yes" votes / total valid votes) × 100
   official_progress      = (confirmed_milestones / total_milestones) × 100
   ```
-  If no official progress data exists: `score = community_score × 100%`. Score range: 0–100%.
+  If no official progress data exists: `score = community_score × 100%`. Score range: 0–100%. Verified citizen votes (account age ≥30 days + ≥3 accepted reports) carry 1.2× weight. `official_progress_score` weighting activates when official milestone data becomes available.
 - **BR-03:** One vote per user per promise. Vote can be changed within 24 hours; locked after that.
 - **BR-04:** Votes from accounts < 7 days old are quarantined and do not count toward the score (anti-spam).
 - **BR-05:** Bang Jaga complaint reports require a GPS location when shared. They **do not** affect the Walk-o-Meter score; they are shown in the feed as a separate type.
@@ -97,7 +97,7 @@
 
 - **A11y:** WCAG 2.1 AA; min tap target 48×48dp for Yes/No and submit; location and camera permissions must be clear and cancellable.
 - **Localization:** ID primary.
-- **Offline / low data:** Data-Saver mode (see BR-11 and §6.3). Failed submissions saved as local drafts (IndexedDB).
+- **Offline / low data:** Data-Saver mode (see BR-11 and §6.3). Failed submissions saved as local drafts (localStorage). *(Note: MVP saves offline drafts in Bang Jaga share-to-map flow via localStorage. Verification flow offline drafts and Profile → Engagement History display are deferred to backlog.)*
 
 ### 3.5 Scalability & Limits
 
@@ -129,7 +129,7 @@
 
 **Entities / tables used:**
 
-- **`walk_o_meter_reports`:** `id`, `report_type` (`promise_verification`|`bang_jaga_complaint`), `promise_id` (nullable FK → `promises.id`), `complaint_id` (nullable FK → `generated_documents.id`), `vote` (`yes`|`no`; for verification only), `photo_url`, `latitude`, `longitude`, `region_id`, `user_id`, `tags` (array, max 3), `verification_count` (for Ground Truth tracking), `trust_tier` (`standard`|`ground_truth`), `status` (`pending`|`accepted`|`rejected`), `created_at`
+- **`walk_o_meter_reports`:** `id`, `report_type` (`promise_verification`|`bang_jaga_complaint`), `promise_id` (nullable FK → `promises.id`), `complaint_id` (nullable FK → `generated_documents.id`), `vote` (`yes`|`no`; for verification only), `photo_url`, `latitude`, `longitude`, `region_id`, `user_id`, `tags` (array, max 3), `verification_count` (for Ground Truth tracking), `trust_tier` (`standard`|`ground_truth`), `status` (`pending`|`accepted`|`rejected`|`resolved`), `created_at`
 - **`promises`:** add `walk_o_meter_score` (0–100 float), `walk_o_meter_count` (int)
 - **`leaderboard_cache`:** `id`, `region_id`, `resolution_rate` (%), `resolved_count`, `total_count`, `trend` (`up`|`flat`|`down`), `calculated_at`
 
@@ -152,7 +152,7 @@
 ### 4.4 Configuration & Environment
 
 - **Env vars:** `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `GOOGLE_GEMINI_API_KEY`, `REPORT_PHOTOS_BUCKET`
-- **Feature flags:** `FEATURE_WALK_O_METER` — enable map/feed + scores; `FEATURE_WALK_O_METER_AUTH_REQUIRED` — require auth to view; `FEATURE_GROUND_TRUTH` — enable auto-promotion
+- **Feature flags (aspirational — not yet implemented in code):** `FEATURE_WALK_O_METER` — enable map/feed + scores; `FEATURE_WALK_O_METER_AUTH_REQUIRED` — require auth to view; `FEATURE_GROUND_TRUTH` — enable auto-promotion
 
 ---
 
@@ -260,7 +260,7 @@ sequenceDiagram
 | Scenario | UI Response |
 |---|---|
 | Map tiles fail to load | Blank canvas + *"Map failed to load. Check your connection."* + [Retry] |
-| Report submission network failure | *"Submission failed. Your report has been saved as a draft."* Draft accessible from Profile → Engagement History |
+| Report submission network failure | *"Submission failed. Your report has been saved as a draft."* Draft saved to localStorage; accessible on next visit. Profile → Engagement History display is deferred to backlog. |
 | Photo upload fails | *"Photo upload failed. Check your connection."* + [Retry] per photo |
 | GPS unavailable during submission | *"We couldn't get your location. Make sure GPS is enabled."* Option to enter RT/RW or landmark as text |
 | "View Original Promise" and promise is deleted | Link text: *"Original promise no longer available."* (no broken link) |
