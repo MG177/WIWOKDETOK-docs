@@ -1,7 +1,7 @@
 # Documentation Sync Audit
 
 Audit date: `2026-03-08`
-**Re-checked: `2026-03-10`** — **All 54 issues VERIFIED against codebase ✅**
+**Re-checked: `2026-03-10`** (parallel subagents)
 
 Scope: `docs/PRD.md`, `docs/features/feat-*.md`, current implementation in `src/`
 
@@ -11,9 +11,10 @@ Scope: `docs/PRD.md`, `docs/features/feat-*.md`, current implementation in `src/
 
 | Status | Count |
 |--------|-------|
-| ✅ SOLVED | 54 |
-| 🔶 PARTIALLY SOLVED | 0 |
-| ❌ STILL OPEN | 0 |
+| ✅ SOLVED | 53 |
+| ❌ STILL OPEN | 1 |
+
+**Open:** #11 — region-only empty state shows "No promises tracked in this region yet." but only "Clear Filters"; docs expect an **[Explore National]** CTA in that state.
 
 ---
 
@@ -34,7 +35,7 @@ Scope: `docs/PRD.md`, `docs/features/feat-*.md`, current implementation in `src/
 8. ✅ **actions/promises.ts lines 172-180** — `promise_submissions` with `status: 'pending'`; **feat-promise-tracker.md AC-09** updated: admin UI deferred
 9. ✅ **promise-tracker/page.tsx line 406** — `Under review — we'll notify you when it's live.`
 10. ✅ **actions/promises.ts lines 103-122** — `pageSize = 20` pagination with `hasMore`
-11. ✅ **promise-tracker/page.tsx lines 379-381** — `No promises tracked in this region yet.`
+11. ❌ **OPEN** — Region-only empty state has "No promises tracked in this region yet." but only "Clear Filters" button; docs expect **[Explore National]** CTA in that state.
 12. ✅ **promise-tracker/page.tsx** — Load More triggers `loadingMore` state with spinner
 13. ✅ Same as #7 — flag logic at ≥10
 14. ✅ **actions/promises.ts lines 232-244** — `flagPromiseComment()` increments `flag_count`
