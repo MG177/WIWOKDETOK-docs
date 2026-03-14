@@ -61,6 +61,7 @@ Feature specifications live in `docs/features/` and use the `feat-*.md` naming c
 - `docs/features/feat-promise-tracker.md`
 - `docs/features/feat-bang-jaga.md`
 - `docs/features/feat-walk-o-meter.md`
+- `docs/features/db-erd.md`
 
 Legacy top-level files such as `docs/feature-promise-tracker.md` are compatibility stubs only. Update the canonical files in `docs/features/`.
 
@@ -90,7 +91,7 @@ Each directory has a **README.md** that repeats purpose, naming, and “when to 
 | Frontend impl | `/frontend`     | `frontend-components.md` | 200–400 |
 | API reference | `/backend`      | `api-overview.md`       | 200–400   |
 | Features      | `/features`     | `feat-<name>.md`        | 200–400   |
-| Storage       | `/database`     | `db-overview.md`        | 200–400   |
+| Storage       | `/features`     | `db-erd.md`            | 200–400   |
 | Testing       | `/testing`      | `test-plan.md`, `flow-coverage.md` | 200–400 |
 | Temp          | `/temp`         | `analysis-*.md`        | N/A       |
 
