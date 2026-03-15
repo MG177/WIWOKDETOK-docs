@@ -243,7 +243,7 @@ sequenceDiagram
     UI-->>User: Law search modal opens
     User->>UI: Search and select a different law
     UI->>SA: submitRagFeedback(sessionId, originalLawId, selectedLawId)
-    SA->>DB: Insert rag_feedback record
+    SA->>DB: Insert rag_feedback record 
     SA->>SA: Update session context with new law
     SA->>SA: Re-trigger generateSuratPengaduan with updated legal basis
     SA-->>UI: Updated document preview stream
